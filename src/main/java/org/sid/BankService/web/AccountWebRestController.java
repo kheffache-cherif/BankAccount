@@ -1,22 +1,30 @@
 package org.sid.BankService.web;
 
+import org.sid.BankService.Dto.BankAccountRequestDTO;
+import org.sid.BankService.Dto.BankAccountResponseDTO;
 import org.sid.BankService.Repositories.BankAccountRepository;
 import org.sid.BankService.entities.BankAccount;
+import org.sid.BankService.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@RestController
+@RestController  // http://localhost:8090/bankAccounts ----> on fait appel à springdataRest
+@RequestMapping("/api")// http://localhost:8090/api/bankAccounts ----> on fait appel à ce AccountWebRestController
 public class AccountWebRestController {
 
     private BankAccountRepository bankAccountRepository;
 
+    private AccountService accountService;
+
+
 
     // injection de dependance avec un constructeur pas abvec @Autowiride
-    public AccountWebRestController(BankAccountRepository bankAccountRepository) {
+    public AccountWebRestController(BankAccountRepository bankAccountRepository,AccountService accountService) {
         this.bankAccountRepository = bankAccountRepository;
+        this.accountService = accountService;
     }
     @GetMapping("/bankAccounts") // norme RESTFull s à la fin
     public List<BankAccount> bankAccounts(){
@@ -29,9 +37,9 @@ public class AccountWebRestController {
                 .orElseThrow(()-> new RuntimeException(String.format("le compte %s est introuvable ",id)));
     }
     @PostMapping("/bankAccounts")
-    public  BankAccount save (@RequestBody BankAccount bankAccount){
-         if(bankAccount.getId()==null) bankAccount.setId(UUID.randomUUID().toString());
-        return bankAccountRepository.save(bankAccount);
+    public BankAccountResponseDTO save (@RequestBody BankAccountRequestDTO requestDto){
+
+        return accountService.addAccount(requestDto);
 
     }
     @PutMapping ("/bankAccounts/{id}")
