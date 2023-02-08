@@ -4,6 +4,7 @@ import org.sid.BankService.Dto.BankAccountRequestDTO;
 import org.sid.BankService.Dto.BankAccountResponseDTO;
 import org.sid.BankService.Repositories.BankAccountRepository;
 import org.sid.BankService.entities.BankAccount;
+import org.sid.BankService.mappers.AccountMapper;
 import org.sid.BankService.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,15 @@ public class AccountWebRestController {
 
     private AccountService accountService;
 
+    private AccountMapper accountMapper;
+
 
 
     // injection de dependance avec un constructeur pas abvec @Autowiride
-    public AccountWebRestController(BankAccountRepository bankAccountRepository,AccountService accountService) {
+    public AccountWebRestController(BankAccountRepository bankAccountRepository,AccountService accountService,AccountMapper accountMapper) {
         this.bankAccountRepository = bankAccountRepository;
         this.accountService = accountService;
+        this.accountMapper =accountMapper;
     }
     @GetMapping("/bankAccounts") // norme RESTFull s à la fin
     public List<BankAccount> bankAccounts(){
